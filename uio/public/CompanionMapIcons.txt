@@ -1,0 +1,4 @@
+Stentorious\CompanionMapIcons\LocalMapQuestMarker.xml::MapMenu:LocalMapQuestMarker
+true
+Stentorious\CompanionMapIcons\WorldMapQuestMarker.xml::MapMenu:WorldMapQuestMarker
+true

@@ -1,0 +1,41 @@
+; Companion Map Icons 1.0 - Stentorious
+if Goo1.AuxVarGetFlt "*CompMapIcons_Init" != 1
+	Goo1.AuxVarSetFlt "*CompMapIcons_Init" 1
+	; Check for requirements
+	if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 2
+	else
+		MessageBoxEx "Companion Map Icons missing requirement!%rInstall xNVSE 6.3.3+."
+		return
+	endif 
+	if GetPluginVersion "JohnnyGuitarNVSE" < 390
+		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest JohnnyGuitar NVSE plugin."
+		return
+	endif
+	if GetPluginVersion "lStewieAl's Tweaks" < 925
+		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest lStewieAl's Tweaks."
+		return
+	endif	
+	if eval FileExists "textures\jazzisparis\ccc\avatar_male.dds" != 1
+		MessageBoxEx "Companion Map Icons missing icons!%rSee mod page for recommended icon packs."
+		return
+	endif	
+	if eval GetINIFloat "General:bColorfulIconSupport" "Stentorious/CompanionMapIcons.ini" == 1
+		Goo1.AuxVarSetFlt "*CompMapIcons_INI" 1 0
+	endif
+	if FileExists "menus\ySI\ySI.xml" == 1
+		Goo1.AuxVarSetFlt "*CompMapIcons_INI" 1 1
+	endif
+endif
+
+; Check for requirements
+if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 2
+else
+	return
+endif 
+if eval (GetPluginVersion "JohnnyGuitarNVSE" < 390 || GetPluginVersion "lStewieAl's Tweaks" < 921 || FileExists "textures\jazzisparis\ccc\avatar_male.dds" != 1)
+	return
+endif
+
+SetOnMenuOpenEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 1 (CompileScript "CompanionMapIcons/MenuLoop.gek") 0) 1 1023	
+SetOnMenuCloseEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons/MenuLoop.gek")) 1 1023
+SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons/MenuLoop.gek")
