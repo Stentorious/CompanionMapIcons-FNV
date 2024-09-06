@@ -1,78 +1,90 @@
-<_CompanionIcon>0</_CompanionIcon>
-
 <alpha>
-	<copy>0</copy>
-	<add>255</add> <onlyifnot src="me()" trait="_CompanionIcon"/>
+	<copy> 0 </copy>
+	<add> 255 </add>
+	<onlyifnot src="me()" trait="_CompanionIcon"/>
 </alpha>
-
 <x>
 	<copy src="me()" trait="_x"/>
 	<mul src="parent()" trait="width"/>
-	<sub> <copy src="me()" trait="_width"/> <div>2</div> </sub>
-	<add>15</add>
+	<sub>
+		<copy src="me()" trait="_width"/>
+		<div> 2 </div>
+	</sub>
+	<add> 15 </add>
 </x>
 
+<_CompanionIcon>0</_CompanionIcon>
 <_width>
-	<copy>0</copy>
-	<add> <copy src="me()" trait="width"/> <onlyif> <copy src="me()" trait="_CompanionIcon"/> <eq>0</eq> </onlyif> </add>
-	<add> <copy>32</copy> <onlyif> <copy src="me()" trait="_CompanionIcon"/> <eq>1</eq> </onlyif> </add>
+	<copy> 0 </copy>
+	<add>
+		<copy src="me()" trait="width"/>
+		<onlyif>
+			<copy src="me()" trait="_CompanionIcon"/>
+			<eq> 0 </eq>
+		</onlyif>
+	</add>
+	<add>
+		<copy> 32 </copy>
+		<onlyif>
+			<copy src="me()" trait="_CompanionIcon"/>
+			<eq> 1 </eq>
+		</onlyif>
+	</add>
 </_width>
 
 <image name="CompanionIcon">
-	
-	<visible> <copy src="parent()" trait="_CompanionIcon"/> </visible>
-	<filename>jazzisparis\ccc\avatar_male.dds</filename>
-	<zoom>&scale;</zoom>
-	<locus>1</locus>
 
+	<visible> <copy src="parent()" trait="_CompanionIcon" /> </visible>
+	<alpha> 300 </alpha>
+	<locus> 1 </locus>
 	<x>
-		<copy src="parent()" trait="x"/>
-		<add>5</add>
+		<copy src="parent()" trait="x" />
+		<add> 5 </add>
 		<sub>
-			<copy src="me()" trait="width"/>
-			<div>2</div>
+			<copy src="me()" trait="width" />
+			<div> 2 </div>
 		</sub>
 	</x>
 	<y>
-		<copy src="parent()" trait="y"/>
-		<add>15</add>
+		<copy src="parent()" trait="y" />
+		<add> 15 </add>
 		<sub>
-			<copy src="me()" trait="height"/>
-			<div>2</div>
+			<copy src="me()" trait="height" />
+			<div> 2 </div>
 		</sub>
 	</y>
-
 	<width>
-		<copy>32</copy>
+		<copy> 32 </copy>
 		<mul>
-			<copy>0.4</copy>
-			<onlyif src="parent()" trait="_selected"/>
-			<add>1</add>
+			<copy> 0.4 </copy>
+			<onlyif src="parent()" trait="_selected" />
+			<add> 1 </add>
 		</mul>
 	</width>
-	<height> <copy src="me()" trait="width"/> </height>
-	
-	<alpha>300</alpha>
+	<height> <copy src="me()" trait="width" /> </height>
+	<zoom> &scale; </zoom>
+	<systemcolor> &pipboy; </systemcolor>
 	<brightness> <copy src="parent()" trait="brightness" /> </brightness>
-	<systemcolor>&pipboy;</systemcolor>
-	
+	<filename> jazzisparis\ccc\avatar_male.dds </filename>
+
 	<image name="DropShadow">
-		
-		<visible> <copy src="parent()" trait="visible"/> </visible>
-		<alpha> <copy src="parent()" trait="alpha"/> <div>2</div> </alpha>
+		<visible> <copy src="parent()" trait="visible" /> </visible>
+		<alpha>
+			<copy src="parent()" trait="alpha" />
+			<div> 2 </div>
+		</alpha>
+		<depth> -1 </depth>
+		<x> 1 </x>
+		<y> 1 </y>
+		<height> <copy src="parent()" trait="height" /> </height>
+		<width> <copy src="parent()" trait="width" /> </width>
+		<zoom> &scale; </zoom>
+		<systemcolor> 0 </systemcolor>
+		<red> 0 </red>
+		<green> 0 </green>
+		<blue> 0 </blue>
 		<brightness> <copy src="parent()" trait="brightness" /> </brightness>
-		<depth>-1</depth>
-		<zoom>&scale;</zoom>
-		<x>1</x>
-		<y>1</y>	
-		<height> <copy src="parent()" trait="height"/> </height>
-		<width> <copy src="parent()" trait="width"/> </width>
-		<systemcolor>0</systemcolor>
-		<red>0</red>
-		<green>0</green>
-		<blue>0</blue>
-		<filename> <copy src="parent()" trait="filename"/> </filename>
-		
+		<filename> <copy src="parent()" trait="filename" /> </filename>
 	</image>
-	
+
 </image>
