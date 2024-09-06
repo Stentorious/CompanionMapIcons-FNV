@@ -6,79 +6,86 @@ ref rCompanion
 array_var aCompanions
 array_var aForE
 string_var sUIPath
-string_var sTexturePath
-string_var sCompanionName
+string_var sIconPath
+string_var sName
 
 begin Function {}
 
-	iUITab = GetUIFloatAlt "MapMenu\GLOW_BRANCH\MM_Tabline\_CurrentTab"													; Get Pip-Boy tab
-	if iUITab < 2																										; If on local/world map tab
-		
-		aCompanions = GetTeammates																						; Get companions
-		if aCompanions																									; If any companions
-		
-			iColor = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 0															; Get colorful icon support
-			iySI = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 1																; Get ySI status
-		
-			foreach aForE <- aCompanions																				; Iterate companions
-				
-				rCompanion = *aForE																						; Get companion ref
-				sCompanionName = rCompanion.LNGetName																	; Get companion name
-				
-				if iUITab == 1																																						; If on world map tab
-					if eval rCompanion.IsInInterior																																	; If companion is in interior
-						iUITile = (Ar_Size aCompanions) - 1																															; Get number of "Door Marker" tiles
-						while iUITile > -1																																			; Iterate "Door Marker" tiles
-							if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sCompanionName	; If matching tile found (Tile string = companion name)
-								sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door Marker:%g" iUITile						; Get companion icon tile path
+	; Process companions and assign icon
+	iUITab = GetUIFloatAlt "MapMenu\GLOW_BRANCH\MM_Tabline\_CurrentTab"
+	if iUITab < 2
+		aCompanions = GetTeammates
+		if aCompanions
+
+			; Get icon settings
+			iColor = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 0
+			iySI = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 1
+
+			; Process companions
+			foreach aForE <- aCompanions
+				rCompanion = *aForE
+				sName = rCompanion.LNGetName
+
+				; Icon path varies on Local/World map and interior/exterior companion location
+				if iUITab == 1
+					if eval rCompanion.IsInInterior
+						iUITile = (Ar_Size aCompanions) - 1
+						while iUITile > -1
+							if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sName
+								sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door Marker:%g" iUITile
 								break
 							endif
 							iUITile -= 1
 						loop
-					else																																							; If companion is in exterior
-						sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z Marker" sCompanionName							; Get companion icon tile path
+					else
+						sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z Marker" sName
 					endif
-				else																																								; If on local map tab
-					sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z Marker" sCompanionName								; Get companion icon tile path
+				else
+					sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z Marker" sName
 				endif
-				
-				if eval GetUIFloatAlt (sUIPath + "\_CompanionIcon") == 0												; If companion icon needs to be processed
-					
-					if eval rCompanion.GetKnockedState																	; If companion unconscious 
-						if eval iySI																					; If ySI installed
-							sTexturePath = "Interface\icons\Aid_DoctorBag.dds"											; Set ySI revive icon
+
+				; Companion icon needs to be updated
+				if eval GetUIFloatAlt (sUIPath + "\_CompanionIcon") == 0
+
+					; Display unconscious icon
+					if eval rCompanion.GetKnockedState
+						if eval iySI
+							sIconPath = "Interface\icons\Aid_DoctorBag.dds"
 						else
-							sTexturePath = "Interface\icons\typeicons\hot_keys_icon_surgerykit.dds"						; Set default revive icon
+							sIconPath = "Interface\icons\typeicons\hot_keys_icon_surgerykit.dds"
 						endif
-						SetUIFloatAlt (sUIPath + "\CompanionIcon\systemcolor") 2										; Set systemcolor red
-					else																								; If companion conscious 
-						sTexturePath = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" sCompanionName				; Set default CCC path
-						if eval FileExists (sTexturePath)																; If default CCC icon exists
-							Sv_Replace "textures\|" sTexturePath														; Remove "textures\" prefix
+						SetUIFloatAlt (sUIPath + "\CompanionIcon\systemcolor") 2
+
+					; Display companion specific icon
+					else
+						sIconPath = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" sName
+						if eval FileExists (sIconPath)
+							Sv_Replace "textures\|" sIconPath
 						else
-							sTexturePath = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" (GetINIString (sv_Construct "Avatar:%z" sCompanionName) "Stentorious\CompanionMapIconsDict.ini") ; Set alt CCC path
-							if eval FileExists (sTexturePath)															; If alt CCC icon exists
-								Sv_Replace "textures\|" sTexturePath													; Remove "textures\" prefix
-							elseif eval rCompanion.GetIsSex Male														; If male companion
-								sTexturePath = "jazzisparis\ccc\avatar_male.dds"										; Set male icon
-							else																						; If female companion
-								sTexturePath = "jazzisparis\ccc\avatar_female.dds"										; Set female icon
+							sIconPath = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" (GetINIString (sv_Construct "Avatar:%z" sName) "Stentorious\CompanionMapIconsDict.ini") ; Set alt CCC path
+							if eval FileExists (sIconPath)
+								Sv_Replace "textures\|" sIconPath
+							elseif eval rCompanion.GetIsSex Male
+								sIconPath = "jazzisparis\ccc\avatar_male.dds"
+							else
+								sIconPath = "jazzisparis\ccc\avatar_female.dds"
 							endif
 						endif
-						if iColor == 1																					; If colorful icons support enabled 
-							SetUIFloatAlt (sUIPath + "\CompanionIcon\systemcolor") 0									; Remove systemcolor
+						if iColor == 1
+							SetUIFloatAlt (sUIPath + "\CompanionIcon\systemcolor") 0
 						endif
 					endif
-					
-					SetUIStringAlt (sUIPath + "\CompanionIcon\filename") (sTexturePath)									; Set icon texture
-					SetUIFloatAlt (sUIPath + "\_CompanionIcon") 1														; Mark icon processed
-					
+
+					; Display icon
+					SetUIStringAlt (sUIPath + "\CompanionIcon\filename") (sIconPath)
+					SetUIFloatAlt (sUIPath + "\_CompanionIcon") 1
+
 				endif
 			loop
 
-			sv_Destruct sUIPath sTexturePath sCompanionName
+			sv_Destruct sUIPath sIconPath sName
 			aCompanions = aForE = ar_Null
-			
+
 		endif
 	endif
 end
