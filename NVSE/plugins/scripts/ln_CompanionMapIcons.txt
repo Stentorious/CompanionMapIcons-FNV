@@ -22,7 +22,7 @@ if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 0 != 1
 		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest User Interface Organizer plugin."
 		return
 	endif
-	if eval FileExists "textures\jazzisparis\ccc\avatar_male.dds" != 1
+	if eval FileExists "textures\jazzisparis\ccc\avatar_male.dds" != 1 && IsModLoaded "JIP Companions Command & Control.esp" != 1
 		MessageBoxEx "Companion Map Icons missing icons!%rSee mod page for recommended icon packs."
 		return
 	endif
