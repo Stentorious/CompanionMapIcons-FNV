@@ -2,6 +2,7 @@ int iUITab
 int iUITile
 int iColor
 int iySI
+int iRecenter
 ref rCompanion
 array_var aCompanions
 array_var aForE
@@ -20,6 +21,7 @@ begin Function {}
 			; Get icon settings
 			iColor = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 0
 			iySI = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 1
+			iRecenter = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 2
 
 			; Process companions
 			foreach aForE <- aCompanions
@@ -27,21 +29,40 @@ begin Function {}
 				sName = rCompanion.LNGetName
 
 				; Icon path varies on Local/World map and interior/exterior companion location
-				if iUITab == 1
-					if eval rCompanion.IsInInterior
-						iUITile = (Ar_Size aCompanions) - 1
-						while iUITile > -1
-							if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sName
-								sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door Marker:%g" iUITile
-								break
-							endif
-							iUITile -= 1
-						loop
+				if iRecenter == 1
+					if iUITab == 1
+						if eval rCompanion.IsInInterior
+							iUITile = (Ar_Size aCompanions) - 1
+							while iUITile > -1
+								if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sName
+									sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door :%g" iUITile
+									break
+								endif
+								iUITile -= 1
+							loop
+						else
+							sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z " sName
+						endif
 					else
-						sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z Marker" sName
+						sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z " sName
 					endif
 				else
-					sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z Marker" sName
+					if iUITab == 1
+						if eval rCompanion.IsInInterior
+							iUITile = (Ar_Size aCompanions) - 1
+							while iUITile > -1
+								if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sName
+									sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door Marker:%g" iUITile
+									break
+								endif
+								iUITile -= 1
+							loop
+						else
+							sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z Marker" sName
+						endif
+					else
+						sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z Marker" sName
+					endif
 				endif
 
 				; Companion icon needs to be updated

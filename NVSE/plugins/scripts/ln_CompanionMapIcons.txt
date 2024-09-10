@@ -29,18 +29,17 @@ if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 0 != 1
 	Goo1.AuxVarSetFlt "*CompMapIcons_Init" 1 1
 
 	; Load INI config
-	if eval GetINIFloat "General:bColorfulIconSupport" "Stentorious/CompanionMapIcons.ini" == 1
+	if eval GetINIFloat "General:bColorfulIconSupport" "Stentorious\CompanionMapIcons.ini" == 1
 		Goo1.AuxVarSetFlt "*CompMapIcons_INI" 1 0
 	endif
-	if FileExists "menus\ySI\ySI.xml" == 1
-		Goo1.AuxVarSetFlt "*CompMapIcons_INI" 1 1
-	endif
+	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (FileExists "menus\ySI\ySI.xml") 1
+	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (GetINIFloat "Tweaks:bMapRecenterHotkey" "..\nvse\plugins\nvse_stewie_tweaks.ini") 2
 
 endif
 
 ; On game load
 if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 1 == 1
-	SetOnMenuOpenEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 1 (CompileScript "CompanionMapIcons/MenuLoop.gek") 0) 1 1023
-	SetOnMenuCloseEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons/MenuLoop.gek")) 1 1023
-	SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons/MenuLoop.gek")
+	SetOnMenuOpenEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 1 (CompileScript "CompanionMapIcons\MenuLoop.gek") 0) 1 1023
+	SetOnMenuCloseEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons\MenuLoop.gek")) 1 1023
+	SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons\MenuLoop.gek")
 endif
