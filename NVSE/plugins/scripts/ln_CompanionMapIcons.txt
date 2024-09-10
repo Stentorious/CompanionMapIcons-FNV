@@ -29,9 +29,7 @@ if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 0 != 1
 	Goo1.AuxVarSetFlt "*CompMapIcons_Init" 1 1
 
 	; Load INI config
-	if eval GetINIFloat "General:bColorfulIconSupport" "Stentorious\CompanionMapIcons.ini" == 1
-		Goo1.AuxVarSetFlt "*CompMapIcons_INI" 1 0
-	endif
+	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (GetINIFloat "General:bColorfulIconSupport" "Stentorious\CompanionMapIcons.ini") 0
 	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (FileExists "menus\ySI\ySI.xml") 1
 	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (GetINIFloat "Tweaks:bMapRecenterHotkey" "..\nvse\plugins\nvse_stewie_tweaks.ini") 2
 
