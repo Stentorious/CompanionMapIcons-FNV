@@ -83,7 +83,7 @@ begin Function {}
 						if eval FileExists (sIconPath)
 							Sv_Replace "textures\|" sIconPath
 						else
-							sIconPath = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" (GetINIString (sv_Construct "Avatar:%z" sName) "Stentorious\CompanionMapIconsDict.ini") ; Set alt CCC path
+							sIconPath = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" (GetINIString (sv_Construct "Avatar:%z" sName) "Stentorious\CompanionMapIconsDict.ini")
 							if eval FileExists (sIconPath)
 								Sv_Replace "textures\|" sIconPath
 							elseif eval rCompanion.GetIsSex Male
