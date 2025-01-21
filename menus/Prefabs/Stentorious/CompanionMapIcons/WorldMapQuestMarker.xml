@@ -17,18 +17,12 @@
 <_width>
 	<copy> 0 </copy>
 	<add>
-		<copy src="me()" trait="width"/>
-		<onlyif>
-			<copy src="me()" trait="_CompanionIcon"/>
-			<eq> 0 </eq>
-		</onlyif>
+		<copy src="me()" trait="width" />
+		<onlyifnot src="me()" trait="_CompanionIcon" />
 	</add>
 	<add>
 		<copy> 32 </copy>
-		<onlyif>
-			<copy src="me()" trait="_CompanionIcon"/>
-			<eq> 1 </eq>
-		</onlyif>
+		<onlyif src="me()" trait="_CompanionIcon" />
 	</add>
 </_width>
 
@@ -74,8 +68,8 @@
 			<div> 2 </div>
 		</alpha>
 		<depth> -1 </depth>
-		<x> 1 </x>
-		<y> 1 </y>
+		<x> 1.5 </x>
+		<y> 1.5 </y>
 		<height> <copy src="parent()" trait="height" /> </height>
 		<width> <copy src="parent()" trait="width" /> </width>
 		<zoom> &scale; </zoom>
