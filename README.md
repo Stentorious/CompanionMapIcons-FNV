@@ -1,4 +1,7 @@
 # Companion Map Icons
+<p align="left">
+    <img height="400px" src="https://i.imgur.com/S7Nxv17.png">
+</p>
 
 ## Overview
 - Adds support for unique companion icons on the Fallout New Vegas local/world maps.
@@ -18,6 +21,7 @@
 - [xNVSE](https://www.nexusmods.com/newvegas/mods/67883) (6.3.3+)
 - [JIP LN NVSE](https://www.nexusmods.com/newvegas/mods/58277)
 - [JohnnyGuitar NVSE](https://www.nexusmods.com/newvegas/mods/66927)
+- [ShowOff xNVSE](https://www.nexusmods.com/newvegas/mods/72541)
 - [User Interface Organizer](https://www.nexusmods.com/newvegas/mods/57174)
 - [lStewieAl's Tweaks](https://www.nexusmods.com/newvegas/mods/66347) 9.25+
 - Any JIP CCC icon pack.
