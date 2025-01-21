@@ -14,6 +14,10 @@ if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 0 != 1
 		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest JohnnyGuitar NVSE plugin."
 		return
 	endif
+	if eval GetPluginVersion "ShowOffNVSE Plugin" < 145
+		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest ShowOff NVSE plugin."
+		return
+	endif
 	if GetPluginVersion "lStewieAl's Tweaks" < 925
 		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest lStewieAl's Tweaks."
 		return
@@ -31,12 +35,17 @@ if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 0 != 1
 	; Load INI config
 	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (GetINIFloat "General:bColorfulIconSupport" "Stentorious\CompanionMapIcons.ini") 0
 	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (FileExists "menus\ySI\ySI.xml") 1
-	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (GetINIFloat "Tweaks:bMapRecenterHotkey" "..\nvse\plugins\nvse_stewie_tweaks.ini") 2
+
+	; Get lStewieAl's Tweaks settings
+	if Goo1.AuxVarType "*_Tweaks:bMapRecenterHotkey" 0 == 0
+		Goo1.AuxVarSetFlt "*_Tweaks:bMapRecenterHotkey" (Call (CompileScript "_Stentorious\GetNumericStewieSetting_Cached.gek") "Tweaks:bMapRecenterHotkey") 0
+		Call (CompileScript "_Stentorious\ClearStewieCacheShowOff.gek")
+	endif
 
 endif
 
 ; On game load
-if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 1 == 1
+if eval Goo1.AuxVarGetFlt "*CompMapIcons_Init" 1
 	SetOnMenuOpenEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 1 (CompileScript "CompanionMapIcons\MenuLoop.gek") 0) 1 1023
 	SetOnMenuCloseEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons\MenuLoop.gek")) 1 1023
 	SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons\MenuLoop.gek")
