@@ -7,7 +7,6 @@ int iSize
 ref rTeammate
 array_var aTeammates
 string_var sTeammateName
-string_var sJIPName
 string_var sUIPath
 string_var sFilename
 
@@ -83,12 +82,8 @@ begin Function {}
 
 						; Check if avatar icon path exists and add to map
 						if eval (sFilename = Goo1.AuxStringMapGetStr "*JIPCCC_Avatars" (sTeammateName)) == ""
-							if eval (sJIPName = GetINIString (sv_Construct "Avatar:%z" sTeammateName) "Stentorious\JIPCCCAvatarDictionary.ini") == ""
-								sJIPName = sTeammateName
-							endif
-
-							; Use avatar
-							if eval FileExists (sFilename = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" sJIPName)
+							if eval FileExists (sFilename = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" sTeammateName) || FileExists (sFilename = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" (GetINIString (sv_Construct "Avatar:%z" sTeammateName) "Stentorious\JIPCCCAvatarDictionary.ini"))
+								printv sFilename
 								sFilename = sFilename[9:-1]
 								Goo1.AuxStringMapSetStr "*JIPCCC_Avatars" (sTeammateName) (sFilename)
 
@@ -113,7 +108,7 @@ begin Function {}
 				endif
 			loop
 
-			sv_Destruct sTeammateName sJIPName sUIPath sFilename
+			sv_Destruct sTeammateName sUIPath sFilename
 			aTeammates = ar_Null
 
 		endif
