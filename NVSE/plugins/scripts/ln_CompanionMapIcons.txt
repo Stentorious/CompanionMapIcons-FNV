@@ -34,7 +34,7 @@ if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 0 != 1
 
 	; Load INI config
 	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (GetINIFloat "General:bColorfulIconSupport" "Stentorious\CompanionMapIcons.ini") 0
-	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (FileExists "menus\ySI\ySI.xml") 1
+	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (FileExists "textures\Interface\icons\Aid_DoctorBag.dds") 1
 
 	; Get lStewieAl's Tweaks settings
 	if Goo1.AuxVarType "*_Tweaks:bMapRecenterHotkey" 0 == 0
