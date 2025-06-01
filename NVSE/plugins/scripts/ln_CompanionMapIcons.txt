@@ -1,52 +1,46 @@
 ; Companion Map Icons - Stentorious
 
-; On game restart
-if Goo1.AuxVarGetFlt "*CompMapIcons_Init" 0 != 1
-	Goo1.AuxVarSetFlt "*CompMapIcons_Init" 1 0
-
-	; Check for requirements
-	if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 2
-	else
-		MessageBoxEx "Companion Map Icons missing requirement!%rInstall xNVSE 6.3.3+."
-		return
-	endif
-	if GetPluginVersion "JohnnyGuitarNVSE" < 390
-		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest JohnnyGuitar NVSE plugin."
-		return
-	endif
-	if eval GetPluginVersion "ShowOffNVSE Plugin" < 145
-		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest ShowOff NVSE plugin."
-		return
-	endif
-	if GetPluginVersion "lStewieAl's Tweaks" < 925
-		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest lStewieAl's Tweaks."
-		return
-	endif
-	if GetPluginVersion "UI Organizer Plugin" < 230
-		MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest User Interface Organizer plugin."
-		return
-	endif
-	if eval FileExists "textures\jazzisparis\ccc\avatar_male.dds" == 0
-		MessageBoxEx "Companion Map Icons missing icons!%rSee mod page for recommended icon packs."
-		return
-	endif
-	Goo1.AuxVarSetFlt "*CompMapIcons_Init" 1 1
-
-	; Load INI config
-	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (GetINIFloat "General:bColorfulIconSupport" "Stentorious\CompanionMapIcons.ini") 0
-	Goo1.AuxVarSetFlt "*CompMapIcons_INI" (FileExists "textures\Interface\icons\Aid_DoctorBag.dds") 1
-
-	; Get lStewieAl's Tweaks settings
-	if Goo1.AuxVarType "*_Tweaks:bMapRecenterHotkey" 0 == 0
-		Goo1.AuxVarSetFlt "*_Tweaks:bMapRecenterHotkey" (Call (CompileScript "_Stentorious\GetNumericStewieSetting_Cached.gek") "Tweaks:bMapRecenterHotkey") 0
-		Call (CompileScript "_Stentorious\ClearStewieCacheShowOff.gek")
-	endif
-
-endif
-
 ; On game load
-if eval Goo1.AuxVarGetFlt "*CompMapIcons_Init" 1
-	SetOnMenuOpenEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 1 (CompileScript "CompanionMapIcons\MenuLoop.gek") 0) 1 1023
-	SetOnMenuCloseEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons\MenuLoop.gek")) 1 1023
-	SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons\MenuLoop.gek")
+SetOnMenuOpenEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 1 (CompileScript "CompanionMapIcons\MenuLoop.gek") 0) 1 1023
+SetOnMenuCloseEventHandler ({int iMenuID} => SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons\MenuLoop.gek")) 1 1023
+SetJohnnyOnRenderUpdateEventHandler 0 (CompileScript "CompanionMapIcons\MenuLoop.gek")
+
+; On game restart
+if eval Goo1.AuxVarGetFlt "*CompMapIcons_Init"
+	return
 endif
+Goo1.AuxVarSetFlt "*CompMapIcons_Init" 1
+
+; Check for requirements
+if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 2
+else
+	MessageBoxEx "Companion Map Icons missing requirement!%rInstall xNVSE 6.3.3+."
+	return
+endif
+if GetPluginVersion "JohnnyGuitarNVSE" < 390
+	MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest JohnnyGuitar NVSE plugin."
+	return
+endif
+if eval GetPluginVersion "ShowOffNVSE Plugin" < 145
+	MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest ShowOff NVSE plugin."
+	return
+endif
+if GetPluginVersion "lStewieAl's Tweaks" < 960
+	MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest lStewieAl's Tweaks."
+	return
+endif
+if GetPluginVersion "UI Organizer Plugin" < 230
+	MessageBoxEx "Companion Map Icons missing requirement!%rInstall latest User Interface Organizer plugin."
+	return
+endif
+if eval FileExists "textures\jazzisparis\ccc\avatar_male.dds" == 0
+	MessageBoxEx "Companion Map Icons missing icons!%rSee mod page for recommended icon packs."
+	return
+endif
+
+; Load INI config
+Goo1.AuxVarSetFlt "*CompMapIcons_INI" (GetINIFloat "General:bColorfulIconSupport" "Stentorious\CompanionMapIcons.ini") 0
+Goo1.AuxVarSetFlt "*CompMapIcons_INI" (FileExists "textures\Interface\icons\Aid_DoctorBag.dds") 1
+
+; Get lStewieAl's Tweaks settings
+Goo1.AuxVarSetFlt "*_Tweaks:bMapRecenterHotkey" (StewVal "bMapRecenterHotkey:Tweaks") 0

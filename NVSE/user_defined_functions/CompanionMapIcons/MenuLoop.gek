@@ -15,101 +15,104 @@ begin Function {}
 	; This needs to be a render loop due to lStewieAl's Tweaks menu search refreshing the UI tiles
 
 	; Process companions and assign icon
-	iUITab = GetUIFloatAlt "MapMenu\GLOW_BRANCH\MM_Tabline\_CurrentTab"
-	if eval iUITab < 2
-		aTeammates = GetTeammates
-		if eval (iSize = Ar_Size aTeammates) > 0
+	if eval (iUITab = GetUIFloatAlt "MapMenu\GLOW_BRANCH\MM_Tabline\_CurrentTab") > 1
+		return
+	endif
 
-			; Get icon settings
-			iColor = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 0
-			iySI = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 1
-			iRecenter = Goo1.AuxVarGetFlt "*_Tweaks:bMapRecenterHotkey" 0
+	aTeammates = GetTeammates
+	if eval (iSize = Ar_Size aTeammates) < 1
+		aTeammates = ar_Null
+		return
+	endif
 
-			; Process companions
-			while (iSize -= 1) > -1
-				rTeammate = aTeammates[iSize]
-				sTeammateName = GetName rTeammate
+	; Get icon settings
+	iColor = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 0
+	iySI = Goo1.AuxVarGetFlt "*CompMapIcons_INI" 1
+	iRecenter = Goo1.AuxVarGetFlt "*_Tweaks:bMapRecenterHotkey" 0
 
-				; Icon path varies on Local/World map and interior/exterior companion location
-				if eval iRecenter
-					if eval iUITab == 1
-						if eval rTeammate.IsInInterior
-							iUITile = Ar_Size aTeammates
-							while (iUITile -= 1) > -1
-								if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sTeammateName
-									sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door :%g" iUITile
-									break
-								endif
-							loop
-						else
-							sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z " sTeammateName
+	; Process companions
+	while (iSize -= 1) > -1
+		rTeammate = aTeammates[iSize]
+		sTeammateName = GetName rTeammate
+
+		; Icon path varies on Local/World map and interior/exterior companion location
+		if eval iRecenter
+			if eval iUITab == 1
+				if eval rTeammate.IsInInterior
+					iUITile = Ar_Size aTeammates
+					while (iUITile -= 1) > -1
+						if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sTeammateName
+							sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door :%g" iUITile
+							break
 						endif
-					else
-						sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z " sTeammateName
-					endif
+					loop
 				else
-					if eval iUITab == 1
-						if eval rTeammate.IsInInterior
-							iUITile = Ar_Size aTeammates
-							while (iUITile -= 1) > -1
-								if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sTeammateName
-									sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door Marker:%g" iUITile
-									break
-								endif
-							loop
-						else
-							sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z Marker" sTeammateName
+					sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z " sTeammateName
+				endif
+			else
+				sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z " sTeammateName
+			endif
+		else
+			if eval iUITab == 1
+				if eval rTeammate.IsInInterior
+					iUITile = Ar_Size aTeammates
+					while (iUITile -= 1) > -1
+						if eval GetUIString ("MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door:" + $iUITile + "\string") == sTeammateName
+							sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\Door Marker:%g" iUITile
+							break
 						endif
+					loop
+				else
+					sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_WorldMap_ClipWindow\MM_WorldMap_ParentImage\%z Marker" sTeammateName
+				endif
+			else
+				sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z Marker" sTeammateName
+			endif
+		endif
+
+		; Companion icon needs to be updated
+		if eval GetUIFloatAlt (sUIPath + "\_CompanionIcon") == 0
+
+			; Display unconscious icon
+			if eval rTeammate.GetKnockedState
+				if eval iySI
+					sFilename = "Interface\icons\Aid_DoctorBag.dds"
+				else
+					sFilename = "Interface\icons\typeicons\hot_keys_icon_surgerykit.dds"
+				endif
+				SetUIFloatAlt (sUIPath + "\CompanionIcon\systemcolor") 2
+
+			; Display companion specific icon
+			else
+
+				; Check if avatar icon path exists and add to map
+				if eval (sFilename = Goo1.AuxStringMapGetStr "*JIPCCC_Avatars" (sTeammateName)) == ""
+					if eval FileExists (sFilename = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" sTeammateName) || FileExists (sFilename = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" (GetINIString (sv_Construct "Avatar:%z" sTeammateName) "Stentorious\JIPCCCAvatarDictionary.ini"))
+						sFilename = sFilename[9:-1]
+						Goo1.AuxStringMapSetStr "*JIPCCC_Avatars" (sTeammateName) (sFilename)
+
+					; Use generic icon
+					elseif eval rTeammate.GetIsSex Male
+						sFilename = "jazzisparis\ccc\avatar_male.dds"
 					else
-						sUIPath = sv_Construct "MapMenu\GLOW_BRANCH\MM_MainRect\MM_LocalMap_ClipWindow\MM_LocalMap_ParentImage\%z Marker" sTeammateName
+						sFilename = "jazzisparis\ccc\avatar_female.dds"
 					endif
 				endif
 
-				; Companion icon needs to be updated
-				if eval GetUIFloatAlt (sUIPath + "\_CompanionIcon") == 0
-
-					; Display unconscious icon
-					if eval rTeammate.GetKnockedState
-						if eval iySI
-							sFilename = "Interface\icons\Aid_DoctorBag.dds"
-						else
-							sFilename = "Interface\icons\typeicons\hot_keys_icon_surgerykit.dds"
-						endif
-						SetUIFloatAlt (sUIPath + "\CompanionIcon\systemcolor") 2
-
-					; Display companion specific icon
-					else
-
-						; Check if avatar icon path exists and add to map
-						if eval (sFilename = Goo1.AuxStringMapGetStr "*JIPCCC_Avatars" (sTeammateName)) == ""
-							if eval FileExists (sFilename = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" sTeammateName) || FileExists (sFilename = sv_Construct "textures\jazzisparis\ccc\avatar_%z.dds" (GetINIString (sv_Construct "Avatar:%z" sTeammateName) "Stentorious\JIPCCCAvatarDictionary.ini"))
-								sFilename = sFilename[9:-1]
-								Goo1.AuxStringMapSetStr "*JIPCCC_Avatars" (sTeammateName) (sFilename)
-
-							; Use generic icon
-							elseif eval rTeammate.GetIsSex Male
-								sFilename = "jazzisparis\ccc\avatar_male.dds"
-							else
-								sFilename = "jazzisparis\ccc\avatar_female.dds"
-							endif
-						endif
-
-						; Set systemcolor
-						if eval iColor
-							SetUIFloatAlt (sUIPath + "\CompanionIcon\systemcolor") 0
-						endif
-					endif
-
-					; Display icon
-					SetUIStringAlt (sUIPath + "\CompanionIcon\filename") (sFilename)
-					SetUIFloatAlt (sUIPath + "\_CompanionIcon") 1
-
+				; Set systemcolor
+				if eval iColor
+					SetUIFloatAlt (sUIPath + "\CompanionIcon\systemcolor") 0
 				endif
-			loop
+			endif
 
-			sv_Destruct sTeammateName sUIPath sFilename
-			aTeammates = ar_Null
+			; Display icon
+			SetUIStringAlt (sUIPath + "\CompanionIcon\filename") (sFilename)
+			SetUIFloatAlt (sUIPath + "\_CompanionIcon") 1
 
 		endif
-	endif
+	loop
+
+	sv_Destruct sTeammateName sUIPath sFilename
+	aTeammates = ar_Null
+
 end
