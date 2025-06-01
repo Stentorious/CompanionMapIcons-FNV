@@ -12,9 +12,9 @@ endif
 Goo1.AuxVarSetFlt "*CompMapIcons_Init" 1
 
 ; Check for requirements
-if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 2
+if GetNVSEVersion > 5 && GetNVSERevision > 2 && GetNVSEBeta > 9
 else
-	MessageBoxEx "Companion Map Icons missing requirement!%rInstall xNVSE 6.3.3+."
+	MessageBoxEx "Companion Map Icons missing requirement!%rInstall xNVSE 6.3.10+."
 	return
 endif
 if GetPluginVersion "JohnnyGuitarNVSE" < 390
